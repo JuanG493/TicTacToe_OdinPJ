@@ -1,0 +1,25 @@
+$primary-color: #4f390f;
+$secundary-color: #000000;
+$input-color: #7b784d;
+
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  // font-weight:lighter;
+  // font-size: large;
+}
+
+@mixin media-sm {
+  @media (max-width: 600px) {
+    @content;
+  }
+}
+
+@mixin media-md {
+  @media (max-width: 1185px) {
+    @content;
+  }
+}
+

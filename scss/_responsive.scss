@@ -1,0 +1,10 @@
+@include media-sm {
+    .main{
+        flex-wrap: wrap;
+        align-content: center;
+        gap: 2%;
+        height: 50vh;
+    }
+
+
+}
