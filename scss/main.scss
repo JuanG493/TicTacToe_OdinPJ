@@ -1,3 +1,34 @@
 @import 'config';
 @import 'responsive';
 
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#board {
+    // border: 2px solid red;
+    height: 250px;
+    width: 250px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    div{
+        border: 2px solid red;
+        // height: 100%;
+        // width: 100%;
+    }
+}
+
+#players{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    grid-template-rows: repeat(3, 1fr);
+    text-align: center;
+    // column-gap: 1%;
+    // flex-direction: column;
+   
+}
