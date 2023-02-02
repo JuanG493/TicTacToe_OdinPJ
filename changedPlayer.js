@@ -1,16 +1,27 @@
-let players = []
-// const [player1, player2] = players;
+// let players = []
+// let [player1, player2] = players;
 
-function setDefaultPj() {
-   let defUser1 = createPerson('user One');
-   players.push(defUser1)
-   let defUser2 = createPerson('user Two');
+const dicPlayers = (()=> {
+   let pjs = [];
 
-   players.push(defUser2)
+   let players = (pj) => {
+      pjs.push(pj)
+   }
 
-}
-setDefaultPj()
+   let desplayers = () => {
+      if( pjs.length >= 1){
+         let [player1,player2] = pjs
+         return {player1, player2}
+      }
+   }
 
+   return {players, pjs, desplayers }
+
+})() 
+
+let players = dicPlayers.pjs
+let player1 = dicPlayers.desplayers.player1;
+let player2 = dicPlayers.desplayers.player2;
 
 const gameBoard = (() => {
    const gridBoard = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3'];
@@ -43,43 +54,36 @@ function makingPersons(num, ind) {
    for (let a = 1; a <= num; a++) {
       let selection = ['X', 'O']
       let partial = createPerson(prompt(`player${a}`), selection[a - 1]);
-      players.push(partial)
+      dicPlayers.players(partial)
    }
    if (ind == 'pc') {
       let partial = createPerson('PC-DEXTRO', '@')
-      players.push(partial)
+      dicPlayers.players(partial);
+      // players.push(partial)
 
    }
 }
 
 const deletePlayers = (() => {
-   // let deleteContentPlayers = () => {
-   //    players[2].length = 0;
-   //    players[3].length = 0;
-   // }
+   let deleteContentPlayers = () =>{
+      players.length = 0;
+   }
    let deleteboard = () => {
       let allDivs = document.querySelectorAll('.zone');
       allDivs.forEach((item) => {
          item.innerHTML = ''
       })
    }
-
-   let deleteDiv = (() => {
-      let boardTarget = document.querySelector('#board');
-      boardTarget.innerHTML = ''
-      gameBoard.callDomy();
-      ctrlFlow.zone();
-   })
    // setNamePoints.drawPlayerName();
-   return {deleteboard, deleteDiv }
+   return {deleteContentPlayers, deleteboard}
 })();
 
 
 function starterGame() {
-   if (players.length >= 3) {
+   if (players.length >= 1) {
       gameBoard.callDomy()
       setNamePoints.drawPlayerName()
-      ctrlFlow.zone();
+      ctrlFlow.zone()
 
    } else {
       alert('please select a mode')
@@ -89,16 +93,18 @@ function starterGame() {
 
 const setNamePoints = (() => {
    const drawPlayerName = () => {
-      let clave1;
-      let clave2;
-      if (players.length <= 2) {
-         clave1 = 0
-         clave2 = 1
-         // return clave1, clave2
-      } else {
-         clave1 = 2
-         clave2 = 3
+      // let [player1, player2] = players;
 
+
+      if (players.length < 1) {
+         player1 = {
+            name : 'player one',
+            points : 0,
+         }
+         player2 = {
+            name : 'player two',
+            points : 0,
+         }
       }
 
       let elements = document.querySelectorAll('.pla');
@@ -106,16 +112,16 @@ const setNamePoints = (() => {
 
          switch (element.id) {
             case 'playerone':
-               element.innerHTML = players[clave1].name
+               element.innerHTML = player1.name
                break
             case 'onepoints':
-               element.innerHTML = players[clave1].points
+               element.innerHTML = player1.points
                break;
             case 'playertwo':
-               element.innerHTML = players[clave2].name
+               element.innerHTML = player2.name
                break;
             case 'twopoints':
-               element.innerHTML = players[clave2].points
+               element.innerHTML = player2.points
          }
       })
    }
@@ -125,7 +131,7 @@ const setNamePoints = (() => {
 /*let to call the function when the page is load */
 setNamePoints.drawPlayerName()
 
-const selectorEvents = (() => {
+const ctrEvents = (() => {
    let oneVsOne = document.querySelector('#onevsone');
    oneVsOne.addEventListener('click', () => {
       deletePlayers.deleteboard()
@@ -140,44 +146,21 @@ const selectorEvents = (() => {
 
    let restar = document.querySelector('#restar')
    restar.addEventListener('click', () => {
-      if(players.length >= 3){
-         // delaLL();
-         console.log('sfsdfsdf')
-         // deletePlayers.deleteContentPlayers();
-         players.splice(2,2)
-         deletePlayers.deleteDiv();
-         // deletePlayers.deleteboard()
-         setNamePoints.drawPlayerName();
+      deletePlayers.deleteContentPlayers();
+      deletePlayers.deleteboard()
+      setNamePoints.drawPlayerName();
 
-      }
    })
-      
-      
-   
+
    let play = document.querySelector('#play')
    play.addEventListener('click', () => {
       starterGame()
    })
 
-   
-
-   
-   
-   
-})()
-
-function makeResult (msj){
-   let results = document.querySelector('#results');
-   results.innerHTML = `${msj}`;
-   setTimeout(() => {
-      results.innerHTML = ''
-      
-   }, 2000);
-}
 
 
 
-
+})();
 //is here becouse I nedd to operate after the button play is clicked//
 const ctrlFlow = (() => {
    const zone = () => {
@@ -197,62 +180,64 @@ const ctrlFlow = (() => {
 })();
 
 
+function assignTurn(positionG, divElm) {
+   // let [player1, player2] = players;
+   //  let player1 = dicPlayers.desplayers.player1
+   //  let player2 = dicPlayers.desplayers.player2
 
-
-
-function assignTurn(ubication, divElm) {
-   if (players[2].ubications.length == players[3].ubications.length) {
+   // let whereInsert;
+   // console.log(typeof(ubication))
+   // if(ubication.includes('A')){
+   //    whereInsert = ubications.a
+   // }
+   if (player1.ubications.length == player2.ubications.length) {
       // console.log(player1.ubication)
 
-      players[2].ubications.push(ubication)
-      divElm.innerHTML = players[2].pointer
-
-      // si lenght mayor de tres enviar
-      if (players[2].ubications.length >= 3) {
-         checkWinner(players[2].ubications, players[2])
-      }
-      // if (players[2].ubications.length == 5) {
-      //    checkWinner(players[2].ubications, players[2])
-      // }
+      player1.ubications.push(positionG)
+      divElm.innerHTML = player1.pointer
       
-   } else {
-      players[3].ubications.push(ubication);
-      divElm.innerHTML = players[3].pointer
       // si lenght mayor de tres enviar
-      if (players[3].ubications.length >= 3) {
-         checkWinner(players[3].ubications, players[3])
+      if (player1.ubications.length >= 3) {
+         checkWinner(player1.ubications, player1)
+      }
+   } else {
+      player2.ubications.push(positionG);
+      divElm.innerHTML = player2.pointer
+      // si lenght mayor de tres enviar
+      if (player2.ubications.length >= 3) {
+         checkWinner(player2.ubications, player2)
       }
    }
-   
+   // tambien se podria pensar en separar para enviar despues de cada jugador realice
+   // un movmiento
+   // checkWinner(player1.ubications, player2.ubications)
    function checkWinner(choosePj, pj) {
-
-      // console.log(choosePj)
+      // console.log(pointsPj)
       let sorting = choosePj.sort().join('');
-      console.log(sorting);
       let cheker = new RegExp(/([A][1-3]){3}|([B][1-3]){3}|([c][1-3]){3}|(?:[a-c]1\w*?){3}|(?:[a-c]2\w*?){3}|(?:[a-c]3\w*?){3}|a1\w*?b2\w*?c3|a3\w*?b2\w*?c1/, 'gi')
       let winner = cheker.test(sorting);
       if (winner) {
-         makeResult(`WINNER ${pj.name}`)
-         
+         // mostrar en un div***
+         alert('TIC-TAC-TOE')
+         // console.log(pj.points);
          pj.points += 1
          setNamePoints.drawPlayerName()
-         players[2].ubications = [];
-         players[3].ubications = [];
-         // deletePlayers.deleteboard();
-         deletePlayers.deleteDiv();
-      }
-      if( !winner && choosePj.length == 5){
-         makeResult('TIE')
-         
+         player1.ubications = [];
+         player2.ubications = [];
+         deletePlayers.deleteboard();
+         ctrlFlow.zone()
+         // console.log(player1.ubications)
+         // console.log(player2.ubications)
+
+         // optimizar esto 
+         // let allDivs = document.querySelectorAll('.zone');
+         // allDivs.forEach((item) => {
+         //    item.innerHTML = ''
+
+         // })
+         // console.log(zone)
+         // ctrlFlow.zone()
+
       }
    }
 }
-
-
-
-
-
-
-
-
-

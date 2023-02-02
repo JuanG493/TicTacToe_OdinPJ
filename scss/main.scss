@@ -18,6 +18,10 @@
     grid-template-rows: repeat(3, 1fr);
     div{
         border: 2px solid red;
+        // text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         // height: 100%;
         // width: 100%;
     }
@@ -31,4 +35,8 @@
     // column-gap: 1%;
     // flex-direction: column;
    
+}
+
+#results{
+    // height: ;
 }
