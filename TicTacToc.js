@@ -1,6 +1,4 @@
 let players = [];
-let playerOne = players[2];
-let playerTwo = players[3];
 // const [player1, player2] = players;
 
 function setDefaultPj() {
@@ -12,6 +10,8 @@ function setDefaultPj() {
 
 }
 setDefaultPj()
+// let playerOne = players[0];
+// let playerTwo = players[1];
 
 
 const gameBoard = (() => {
@@ -53,10 +53,10 @@ function makingPersons(num, ind) {
 }
 
 const deletePlayers = (() => {
-   // let deleteContentPlayers = () => {
-   //    players[2].length = 0;
-   //    players[3].length = 0;
-   // }
+   let delContentPj = () => {
+      players[0].ubications = [];
+      players[1].ubications = [];
+   }
    let deleteboard = () => {
       let allDivs = document.querySelectorAll('.zone');
       allDivs.forEach((item) => {
@@ -71,12 +71,12 @@ const deletePlayers = (() => {
       ctrlFlow.zone();
    })
    // setNamePoints.drawPlayerName();
-   return {deleteboard, deleteDiv }
+   return {delContentPj, deleteboard, deleteDiv }
 })();
 
 
 function starterGame() {
-   if (players.length >= 3) {
+   if (players.length >= 2) {
       gameBoard.callDomy()
       setNamePoints.drawPlayerName()
       ctrlFlow.zone();
@@ -89,33 +89,25 @@ function starterGame() {
 
 const setNamePoints = (() => {
    const drawPlayerName = () => {
-      let clave1;
-      let clave2;
-      if (players.length <= 2) {
-         clave1 = 0
-         clave2 = 1
-         // return clave1, clave2
-      } else {
-         clave1 = 2
-         clave2 = 3
 
-      }
+      let playerOne = players[0];
+      let playerTwo = players[1];
 
       let elements = document.querySelectorAll('.pla');
       elements.forEach(element => {
 
          switch (element.id) {
             case 'playerone':
-               element.innerHTML = players[clave1].name
+               element.innerHTML = playerOne.name
                break
             case 'onepoints':
-               element.innerHTML = players[clave1].points
+               element.innerHTML = playerOne.points
                break;
             case 'playertwo':
-               element.innerHTML = players[clave2].name
+               element.innerHTML = playerTwo.name
                break;
             case 'twopoints':
-               element.innerHTML = players[clave2].points
+               element.innerHTML = playerTwo.points
          }
       })
    }
@@ -132,43 +124,39 @@ const selectorEvents = (() => {
       makingPersons(2);
    })
 
-   let OneVsPc = document.querySelector('#onevspc');
-   OneVsPc.addEventListener('click', () => {
+   let oneVsPc = document.querySelector('#onevspc');
+   oneVsPc.addEventListener('click', () => {
       deletePlayers.deleteboard()
       makingPersons(1, 'pc');
    })
 
    let restar = document.querySelector('#restar')
    restar.addEventListener('click', () => {
-      if(players.length >= 3){
-         // delaLL();
-         console.log('sfsdfsdf')
-         // deletePlayers.deleteContentPlayers();
-         players.splice(2,2)
+      if (players.length >= 2) {
+         players.splice(0, 2)
+         setDefaultPj()
          deletePlayers.deleteDiv();
-         // deletePlayers.deleteboard()
          setNamePoints.drawPlayerName();
-
       }
    })
-   
+
    let play = document.querySelector('#play')
    play.addEventListener('click', () => {
+      // becouse I have to delete the two Object by default
+      players.splice(0, 2)
       starterGame()
    })
-   
+
 })()
 
-function makeResult (msj){
+function makeResult(msj) {
    let results = document.querySelector('#results');
    results.innerHTML = `${msj}`;
    setTimeout(() => {
       results.innerHTML = ''
-      
+
    }, 2000);
 }
-
-
 
 
 //is here becouse I nedd to operate after the button play is clicked//
@@ -181,63 +169,64 @@ const ctrlFlow = (() => {
             // event.stopPropagation()
             let coordinate = element.getAttribute("data-key");
             assignTurn(coordinate, element)
-         },{once : true})
+         }, { once: true })
       })
    }
    return { zone }
 
 
+   function assignTurn(ubication, divElm) {
+      let selctPj1 = players[0].ubications;
+      let selctPj2 = players[1].ubications;
+
+      if (selctPj1.length == selctPj2.length) {
+         selctPj1.push(ubication)
+         divElm.innerHTML = players[0].pointer
+         // si lenght mayor de tres enviar
+         if (selctPj1.length >= 3) {
+            checkWinner(selctPj1, players[0])
+         }
+
+      } else {
+         selctPj2.push(ubication);
+         divElm.innerHTML = players[1].pointer
+         // si lenght mayor de tres enviar
+         if (selctPj2.length >= 3) {
+            checkWinner(selctPj2, players[1])
+         }
+      }
+
+      function checkWinner(choosePj, pj) {
+
+         let sorting = choosePj.sort().join('');
+         let cheker = new RegExp(/([A][1-3]){3}|([B][1-3]){3}|([c][1-3]){3}|(?:[a-c]1\w*?){3}|(?:[a-c]2\w*?){3}|(?:[a-c]3\w*?){3}|a1\w*?b2\w*?c3|a3\w*?b2\w*?c1/, 'gi')
+         let winner = cheker.test(sorting);
+         if (winner) {
+            makeResult(`WINNER ${pj.name}`)
+
+            pj.points += 1
+            setNamePoints.drawPlayerName()
+            deletePlayers.delContentPj();
+            deletePlayers.deleteDiv();
+         }
+         if (!winner && choosePj.length == 5) {
+            makeResult('TIE');
+            deletePlayers.delContentPj();
+            deletePlayers.deleteDiv();
+
+
+         }
+      }
+   }
 })();
 
 
 
 
 
-function assignTurn(ubication, divElm) {
-   if (players[2].ubications.length == players[3].ubications.length) {
-
-      players[2].ubications.push(ubication)
-      divElm.innerHTML = players[2].pointer
-
-      // si lenght mayor de tres enviar
-      if (players[2].ubications.length >= 3) {
-         checkWinner(players[2].ubications, players[2])
-      }
-      
-   } else {
-      players[3].ubications.push(ubication);
-      divElm.innerHTML = players[3].pointer
-      // si lenght mayor de tres enviar
-      if (players[3].ubications.length >= 3) {
-         checkWinner(players[3].ubications, players[3])
-      }
-   }
-   
-   function checkWinner(choosePj, pj) {
-
-      let sorting = choosePj.sort().join('');
-      let cheker = new RegExp(/([A][1-3]){3}|([B][1-3]){3}|([c][1-3]){3}|(?:[a-c]1\w*?){3}|(?:[a-c]2\w*?){3}|(?:[a-c]3\w*?){3}|a1\w*?b2\w*?c3|a3\w*?b2\w*?c1/, 'gi')
-      let winner = cheker.test(sorting);
-      if (winner) {
-         makeResult(`WINNER ${pj.name}`)
-         
-         pj.points += 1
-         setNamePoints.drawPlayerName()
-         players[2].ubications = [];
-         players[3].ubications = [];
-         deletePlayers.deleteDiv();
-      }
-      if( !winner && choosePj.length == 5){
-         makeResult('TIE')
-         
-      }
-   }
-}
 
 
 
-
-let testinsg = document.querySelector('div')
 
 
 
