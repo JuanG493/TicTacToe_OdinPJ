@@ -1,4 +1,6 @@
-let players = []
+let players = [];
+let playerOne = players[2];
+let playerTwo = players[3];
 // const [player1, player2] = players;
 
 function setDefaultPj() {
@@ -25,8 +27,6 @@ const gameBoard = (() => {
    }
    return { callDomy }
 })();
-
-
 
 
 function createPerson(name, pointer) {
@@ -151,18 +151,11 @@ const selectorEvents = (() => {
 
       }
    })
-      
-      
    
    let play = document.querySelector('#play')
    play.addEventListener('click', () => {
       starterGame()
    })
-
-   
-
-   
-   
    
 })()
 
@@ -202,7 +195,6 @@ const ctrlFlow = (() => {
 
 function assignTurn(ubication, divElm) {
    if (players[2].ubications.length == players[3].ubications.length) {
-      // console.log(player1.ubication)
 
       players[2].ubications.push(ubication)
       divElm.innerHTML = players[2].pointer
@@ -211,9 +203,6 @@ function assignTurn(ubication, divElm) {
       if (players[2].ubications.length >= 3) {
          checkWinner(players[2].ubications, players[2])
       }
-      // if (players[2].ubications.length == 5) {
-      //    checkWinner(players[2].ubications, players[2])
-      // }
       
    } else {
       players[3].ubications.push(ubication);
@@ -226,9 +215,7 @@ function assignTurn(ubication, divElm) {
    
    function checkWinner(choosePj, pj) {
 
-      // console.log(choosePj)
       let sorting = choosePj.sort().join('');
-      console.log(sorting);
       let cheker = new RegExp(/([A][1-3]){3}|([B][1-3]){3}|([c][1-3]){3}|(?:[a-c]1\w*?){3}|(?:[a-c]2\w*?){3}|(?:[a-c]3\w*?){3}|a1\w*?b2\w*?c3|a3\w*?b2\w*?c1/, 'gi')
       let winner = cheker.test(sorting);
       if (winner) {
@@ -238,7 +225,6 @@ function assignTurn(ubication, divElm) {
          setNamePoints.drawPlayerName()
          players[2].ubications = [];
          players[3].ubications = [];
-         // deletePlayers.deleteboard();
          deletePlayers.deleteDiv();
       }
       if( !winner && choosePj.length == 5){
@@ -251,7 +237,7 @@ function assignTurn(ubication, divElm) {
 
 
 
-
+let testinsg = document.querySelector('div')
 
 
 
