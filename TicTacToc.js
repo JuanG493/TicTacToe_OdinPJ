@@ -1,5 +1,4 @@
 let players = [];
-// const [player1, player2] = players;
 
 function setDefaultPj() {
    let defUser1 = createPerson('user One');
@@ -10,8 +9,6 @@ function setDefaultPj() {
 
 }
 setDefaultPj()
-// let playerOne = players[0];
-// let playerTwo = players[1];
 
 
 const gameBoard = (() => {
@@ -219,9 +216,6 @@ const ctrlFlow = (() => {
       }
    }
 })();
-
-
-
 
 
 
