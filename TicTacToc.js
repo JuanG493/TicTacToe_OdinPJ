@@ -260,17 +260,13 @@ const ctrlFlow = (() => {
 
    const checkWinner = (chooseOfPj, player) => {
       let winner = calMinMax.evaluate(chooseOfPj.sort(), [], true);
-      console.log(winner);
       if(winner[0] == -10){
          let winnerMathc = winner[1].match(/[A-Z]\d/g);
          for(let i of winnerMathc){
             let winDiv = document.querySelector(`div[data-key="${i}"`);
             winDiv.classList.add('winner')
-   
          }
          setTimeout(() => {
-            
-            
             if (winner[0] == -10) {
    
                makeResult(`WINNER ${player.name}`)
