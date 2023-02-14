@@ -1,10 +1,9 @@
 let players = [];
 
 function setDefaultPj() {
-   let defUser1 = createPerson('user One');
+   let defUser1 = createPerson('User One');
    players.push(defUser1)
-   let defUser2 = createPerson('user Two');
-
+   let defUser2 = createPerson('User Two');
    players.push(defUser2)
 
 }
@@ -51,6 +50,13 @@ function makingPersons(num, ind) {
 }
 
 const deletePlayers = (() => {
+   let combDeath = () => {
+      deletePlayers.deleteDiv();
+      deletePlayers.deleteboard();
+      setNamePoints.drawPlayerName();
+
+
+   }
    let delContentPj = () => {
       players[0].ubications.length = 0;
       players[1].ubications.length = 0;
@@ -61,27 +67,18 @@ const deletePlayers = (() => {
          item.innerHTML = ''
       })
    }
-
    let deleteDiv = (() => {
       let boardTarget = document.querySelector('#board');
       boardTarget.innerHTML = ''
-      gameBoard.callDomy();
-      ctrlFlow.zone();
    })
-   // setNamePoints.drawPlayerName();
-   return { delContentPj, deleteboard, deleteDiv }
+   return { delContentPj, deleteboard, deleteDiv, combDeath }
 })();
 
 
 function starterGame() {
-   if (players.length >= 2) {
-      gameBoard.callDomy()
-      setNamePoints.drawPlayerName()
-      ctrlFlow.zone();
-
-   } else {
-      alert('please select a mode')
-   }
+   gameBoard.callDomy()
+   setNamePoints.drawPlayerName()
+   ctrlFlow.zone();
 
 }
 
@@ -111,48 +108,88 @@ const setNamePoints = (() => {
    }
    return { drawPlayerName }
 
-})()
+})();
+
 /*let to call the function when the page is load */
-setNamePoints.drawPlayerName()
+setNamePoints.drawPlayerName();
+gameBoard.callDomy();
 
 const selectorEvents = (() => {
    let oneVsOne = document.querySelector('#onevsone');
-   oneVsOne.addEventListener('click', () => {
-      deletePlayers.deleteboard()
-      makingPersons(2);
+   oneVsOne.addEventListener('click', (event) => {
+      if (players[0].name != 'User One') {
+         event.preventDefault();
+      } else {
+         deletePlayers.deleteboard()
+         makingPersons(2);
+      }
    })
 
    let oneVsPc = document.querySelector('#onevspc');
-   oneVsPc.addEventListener('click', () => {
-      deletePlayers.deleteboard()
-      makingPersons(1, 'pc');
-   })
+   oneVsPc.addEventListener('click', (event) => {
+      if (players[0].name != 'User One') {
+         event.preventDefault();
+      } else {
 
-   let restar = document.querySelector('#restar')
-   restar.addEventListener('click', () => {
-      if (players.length >= 2) {
-         players.splice(0, 2)
-         setDefaultPj()
-         deletePlayers.deleteDiv();
-         setNamePoints.drawPlayerName();
+         deletePlayers.deleteboard()
+         makingPersons(1, 'pc');
       }
    })
-   
-   let play = document.querySelector('#play')
-   play.addEventListener('click', () => {
-      // because I have to delete the two Object by default
-      players.splice(0, 2)
-      starterGame()
+
+   let reset = document.querySelector('#reset')
+   reset.addEventListener('click', () => {
+      if (players.length >= 2) {
+         splicePlayers();
+         setDefaultPj();
+         deletePlayers.combDeath();
+         gameBoard.callDomy();
+      }
+   });
+
+   let restar = document.querySelector('#restar');
+   restar.addEventListener('click', () => {
+      players[0].points = 0;
+      players[1].points = 0;
+      deletePlayers.deleteDiv;
+      deletePlayers.deleteboard;
+      setNamePoints.drawPlayerName();
+
    })
-   
-})()
+
+   let play = document.querySelector('#play')
+   play.addEventListener('click', (event) => {
+
+      if (players[0].name != 'User One') {
+         event.preventDefault();
+      }
+      else if (players.length >= 3) {
+         deletePlayers.deleteDiv();
+         splicePlayers();
+         starterGame();
+      }
+      else {
+         alert('select a mode please')
+      }
+
+
+      // because I have to delete the two Object by default
+   })
+
+   function splicePlayers() {
+      players.splice(0, 2)
+   }
+
+})();
+
 function makeResult(msj) {
-   let results = document.querySelector('#results');
+   let results = document.querySelector('.results');
+   results.classList.add('show');
    results.innerHTML = `${msj}`;
    setTimeout(() => {
+      results.classList.remove('show');
       results.innerHTML = ''
-      
-   }, 4000);
+
+   }, 2000);
 }
 
 // here because I nedd to elminate the function that handle the events
@@ -171,7 +208,7 @@ const ctrlFlow = (() => {
       grid.forEach((element) => {
          element.addEventListener('click', clickDivElm, { once: true });
       })
-   }
+   };
 
    const assignTurn = (ubication, divElm) => {
       let selctPj1 = players[0].ubications;
@@ -182,65 +219,80 @@ const ctrlFlow = (() => {
          divElm.innerHTML = players[0].pointer
 
          let testing = checkWinner(selctPj1, players[0])
- 
-         if (!testing){
-            let nextMove = minmaxT.tranformBoard()
+
+         if (!testing) {
+            let nextMove = calMinMax.transformBoard();
             selctPc.push(nextMove);
             let where = document.querySelector(`div[data-key="${nextMove}"]`);
-   
+
             where.innerHTML = players[1].pointer;
             where.removeEventListener('click', clickDivElm, { once: true });
-   
+            // setTimeout(() => {
+               
+            // }, 1000);
+
+
             if (selctPc.length >= 3) {
                checkWinner(selctPc, players[1])
             }
          }
 
-      } else {
+      }
+      else {
 
          if (selctPj1.length == selctPc.length) {
-
             selctPj1.push(ubication)
             divElm.innerHTML = players[0].pointer
-
-            // si lenght mayor de tres enviar
             if (selctPj1.length >= 3) {
                checkWinner(selctPj1, players[0]);
             }
-
-         } else {
+         }
+         else {
             selctPc.push(ubication);
             divElm.innerHTML = players[1].pointer
-            // si lenght mayor de tres enviar
             if (selctPc.length >= 3) {
                checkWinner(selctPc, players[1]);
             }
-
          }
       }
    }
 
 
    const checkWinner = (chooseOfPj, player) => {
-      let winner = minmaxT.evaluate(chooseOfPj.sort(), []);
-      if (winner == -10) {
-         makeResult(`WINNER ${player.name}`)
-
-         player.points += 1
-         setNamePoints.drawPlayerName()
-         deletePlayers.delContentPj();
-         deletePlayers.deleteDiv();
-         return true
-      }
-      else if (winner == 0 && chooseOfPj.length == 5) {
-         makeResult('TIE');
-         deletePlayers.delContentPj();
-         deletePlayers.deleteDiv();
-         return true
-
-      }
-      else {
-         return false
+      let winner = calMinMax.evaluate(chooseOfPj.sort(), [], true);
+      console.log(winner);
+      if(winner[0] == -10){
+         let winnerMathc = winner[1].match(/[A-Z]\d/g);
+         for(let i of winnerMathc){
+            let winDiv = document.querySelector(`div[data-key="${i}"`);
+            winDiv.classList.add('winner')
+   
+         }
+         setTimeout(() => {
+            
+            
+            if (winner[0] == -10) {
+   
+               makeResult(`WINNER ${player.name}`)
+               player.points += 1
+               deletePlayers.combDeath();
+               deletePlayers.delContentPj();
+               gameBoard.callDomy();
+               ctrlFlow.zone();
+               return true
+            }
+            else if (winner[0] == 0 && chooseOfPj.length == 5) {
+               makeResult('TIE');
+               deletePlayers.delContentPj();
+               deletePlayers.deleteDiv();
+               gameBoard.callDomy();
+               ctrlFlow.zone();
+               return true
+            }
+            else {
+               return false
+            }
+         }, 900);
       }
    }
    return { zone, assignTurn, checkWinner }
@@ -248,12 +300,11 @@ const ctrlFlow = (() => {
 
 
 
-const minmaxT = (() => {
+const calMinMax = (() => {
 
-   function tranformBoard() {
+   function transformBoard() {
       let board = {}
       let allElments = document.querySelectorAll('.zone');
-
       allElments.forEach(elm => {
          let totem = elm.dataset.key
          if (elm.innerHTML == '') {
@@ -266,10 +317,11 @@ const minmaxT = (() => {
             board[totem] = players[0].pointer
          }
       })
-      return intermediaria(board);
+      return intermediary(board);
    }
+   // base on https://www.geeksforgeeks.org/minimax-algorithm-in-game-theory-set-3-tic-tac-toe-ai-finding-optimal-move/
 
-   function intermediaria(board) {
+   function intermediary(board) {
       let bestVal = -1000
       let bestMove = '';
 
@@ -352,7 +404,7 @@ const minmaxT = (() => {
          return 0
       }
    }
-   function evaluate(teamX, teamPc) {
+   function evaluate(teamX, teamPc, cla = false) {
 
       let patterns = {
          rows: /((?:[A][1-3]){3}|(?:[B][1-3]){3}|(?:[c][1-3]){3})/gi,
@@ -366,6 +418,19 @@ const minmaxT = (() => {
       for (let key in patterns) {
 
          if (patterns[key].test(strOponent)) {
+            if(cla){
+               let matche = strOponent.match(patterns[key]);
+               if(key == 'diagonals'){
+                  if(matche[0][1] == 1){
+                     return [-10, 'A1B2C3']
+                  }else{
+                     return [-10, 'A3B2C1']
+                  }
+               }
+               else {
+                  return [-10, matche.join('')]
+               }
+            }
             return -10
          }
          if (patterns[key].test(strPlayerPc)) {
@@ -374,7 +439,7 @@ const minmaxT = (() => {
       }
       return 0
    }
-   return { intermediaria, tranformBoard, evaluate }
+   return { transformBoard, evaluate }
 
 })();
 
