@@ -5,7 +5,6 @@ function setDefaultPj() {
    players.push(defUser1)
    let defUser2 = createPerson('User Two');
    players.push(defUser2)
-
 }
 setDefaultPj()
 
@@ -54,8 +53,6 @@ const deletePlayers = (() => {
       deletePlayers.deleteDiv();
       deletePlayers.deleteboard();
       setNamePoints.drawPlayerName();
-
-
    }
    let delContentPj = () => {
       players[0].ubications.length = 0;
@@ -79,18 +76,14 @@ function starterGame() {
    gameBoard.callDomy()
    setNamePoints.drawPlayerName()
    ctrlFlow.zone();
-
 }
 
 const setNamePoints = (() => {
    const drawPlayerName = () => {
-
       let playerOne = players[0];
       let playerTwo = players[1];
-
       let elements = document.querySelectorAll('.pla');
       elements.forEach(element => {
-
          switch (element.id) {
             case 'playerone':
                element.innerHTML = playerOne.name
@@ -130,7 +123,6 @@ const selectorEvents = (() => {
       if (players[0].name != 'User One') {
          event.preventDefault();
       } else {
-
          deletePlayers.deleteboard()
          makingPersons(1, 'pc');
       }
@@ -153,7 +145,6 @@ const selectorEvents = (() => {
       deletePlayers.deleteDiv;
       deletePlayers.deleteboard;
       setNamePoints.drawPlayerName();
-
    })
 
    let play = document.querySelector('#play')
@@ -170,11 +161,9 @@ const selectorEvents = (() => {
       else {
          alert('select a mode please')
       }
-
-
-      // because I have to delete the two Object by default
    })
-
+   
+   // because I have to delete the two Object by default
    function splicePlayers() {
       players.splice(0, 2)
    }
@@ -225,13 +214,9 @@ const ctrlFlow = (() => {
             selctPc.push(nextMove);
             let where = document.querySelector(`div[data-key="${nextMove}"]`);
 
+
             where.innerHTML = players[1].pointer;
             where.removeEventListener('click', clickDivElm, { once: true });
-            // setTimeout(() => {
-               
-            // }, 1000);
-
-
             if (selctPc.length >= 3) {
                checkWinner(selctPc, players[1])
             }
@@ -260,15 +245,15 @@ const ctrlFlow = (() => {
 
    const checkWinner = (chooseOfPj, player) => {
       let winner = calMinMax.evaluate(chooseOfPj.sort(), [], true);
-      if(winner[0] == -10){
+      if (winner[0] == -10) {
          let winnerMathc = winner[1].match(/[A-Z]\d/g);
-         for(let i of winnerMathc){
+         for (let i of winnerMathc) {
             let winDiv = document.querySelector(`div[data-key="${i}"`);
             winDiv.classList.add('winner')
          }
          setTimeout(() => {
             if (winner[0] == -10) {
-   
+
                makeResult(`WINNER ${player.name}`)
                player.points += 1
                deletePlayers.combDeath();
@@ -277,18 +262,19 @@ const ctrlFlow = (() => {
                ctrlFlow.zone();
                return true
             }
-            else if (winner[0] == 0 && chooseOfPj.length == 5) {
-               makeResult('TIE');
-               deletePlayers.delContentPj();
-               deletePlayers.deleteDiv();
-               gameBoard.callDomy();
-               ctrlFlow.zone();
-               return true
-            }
-            else {
-               return false
-            }
          }, 900);
+      }
+
+      else if (winner == 0 && chooseOfPj.length == 5) {
+         makeResult('TIE');
+         deletePlayers.delContentPj();
+         deletePlayers.deleteDiv();
+         gameBoard.callDomy();
+         ctrlFlow.zone();
+         return true
+      }
+      else {
+         return false
       }
    }
    return { zone, assignTurn, checkWinner }
@@ -400,11 +386,12 @@ const calMinMax = (() => {
          return 0
       }
    }
-   function evaluate(teamX, teamPc, cla = false) {
+   function evaluate(teamX, teamPc, identifier = false) {
 
       let patterns = {
          rows: /((?:[A][1-3]){3}|(?:[B][1-3]){3}|(?:[c][1-3]){3})/gi,
-         columns: /((?:[a-c]1\w*?){3}|(?:[a-c]2\w*?){3}|(?:[a-c]3\w*?){3})/gi,
+         // columns patter withouth global flag becouse I nedd the capturing groups
+         columns: /(a1).*?(b1).*?(c1)|(a2).*?(b2).*?(c2)|(a3).*?(b3).*?(c3)/i,
          diagonals: /(a1\w*?b2\w*?c3|a3\w*?b2\w*?c1)/gi
 
       }
@@ -414,17 +401,27 @@ const calMinMax = (() => {
       for (let key in patterns) {
 
          if (patterns[key].test(strOponent)) {
-            if(cla){
-               let matche = strOponent.match(patterns[key]);
-               if(key == 'diagonals'){
-                  if(matche[0][1] == 1){
+            if (identifier) {
+               let returnMatch = strOponent.match(patterns[key]);
+               // format the diagonales in the result
+               if (key == 'diagonals') {
+                  if (returnMatch[0][1] == 1) {
                      return [-10, 'A1B2C3']
-                  }else{
+                  } else {
                      return [-10, 'A3B2C1']
                   }
+                  // if resturnMatch.length >=2 that means that pc make more than three moves and need tho format the columns
+               } else if (returnMatch.length >= 2) {
+                  let newM = [];
+                  for (let i = 1; i <= returnMatch.length; i++) {
+                     if (returnMatch[i] != undefined) {
+                        newM.push(returnMatch[i])
+                     }
+                  }
+                  return [-10, newM.join('')]
                }
                else {
-                  return [-10, matche.join('')]
+                  return [-10, returnMatch.join('')]
                }
             }
             return -10
