@@ -254,7 +254,7 @@ const ctrlFlow = (() => {
          setTimeout(() => {
             if (winner[0] == -10) {
 
-               makeResult(`WINNER ${player.name}`)
+               displayResult(`WINNER ${player.name}`)
                player.points += 1
                deletePlayers.combDeath();
                deletePlayers.delContentPj();
@@ -266,7 +266,7 @@ const ctrlFlow = (() => {
       }
 
       else if (winner == 0 && chooseOfPj.length == 5) {
-         makeResult('TIE');
+         displayResult('TIE');
          deletePlayers.delContentPj();
          deletePlayers.deleteDiv();
          gameBoard.callDomy();
