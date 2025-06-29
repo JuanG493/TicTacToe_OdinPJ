@@ -1,0 +1,25 @@
+{
+  "name": "tictactoe_odinpj",
+  "version": "1.0.0",
+  "description": "Tic Tac Toe game for Odin Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest",
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JuanG493/TicTacToe_OdinPJ.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JuanG493/TicTacToe_OdinPJ/issues"
+  },
+  "homepage": "https://github.com/JuanG493/TicTacToe_OdinPJ#readme",
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  }
+}
