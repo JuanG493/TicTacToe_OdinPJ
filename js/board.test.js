@@ -73,3 +73,13 @@ describe('test for diagonales', () => {
         ], "x")).toBeTruthy();
     })
 })
+
+describe('tie game', () => {
+    test("no winner", () => {
+        expect(evaluator([
+            ["o", "o", "x"],
+            ["x", "x", "o"],
+            ["o", "x", "x"]
+        ], "x")).toBeFalsy();
+    })
+})

@@ -6,13 +6,57 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="module" src="./dist/index.js"></script>
-    <!-- <link rel="stylesheet" href="./css/main.css"> -->
+    <link rel="stylesheet" href="./css/main.min.css">
+    <link rel="stylesheet" href="./css/reset.css">
     <title>Document</title>
 </head>
 
 <body>
-
-
+    <div class="cmp-tictactoe">
+        <h1 class="cmp-tictactoe__title">Tic - Tac - Toe</h1>
+        <div class="cmp-tictactoe__modality">
+            <button class="cmp-tictactoe__modality-element cmp-tictactoe__modality-element--active"
+                id="friend">Friend</button>
+            <button class="cmp-tictactoe__modality-element" id="machine">Machine</button>
+        </div>
+        <div class="cmp-tictactoe__messages"></div>
+        <div class="cmp-tictactoe__game-zone">
+            <div class="game-zone__board"></div>
+            <div class="game-zone__player">
+                <div class="game-zone__player-container">
+                    <h2 class="player-container__name" id="nameOne">player1</h2>
+                    <span class="player-container__mark" id="markOne">🐱</span>
+                    <button class="player-container__edit" data-player="playerOne">
+                        <img class="player-container__edit-icon" src="/img/edit.svg" alt="edit">
+                    </button>
+                </div>
+                <p class="game-zone__player-score" id="scorePjOne">0</p>
+            </div>
+            <div class="game-zone__player">
+                <div class="game-zone__player-container">
+                    <h2 class="player-container__name" id="nameTwo">player2</h2>
+                    <span class="player-container__mark" id="markTwo">🐶</span>
+                    <button class="player-container__edit" data-player="playerTwo">
+                        <img class="player-container__edit-icon" src="/img/edit.svg" alt="edit">
+                    </button>
+                </div>
+                <p class="game-zone__player-score" id="scorePjTwo">0</p>
+            </div>
+        </div>
+        <div class="cmp-tictactoe__controls">
+            <button id="play">Play</button>
+            <button id="reset">Reset</button>
+        </div>
+        <dialog class="cmp-tictactoe__name-modal">
+            <label for="name">Nickname</label>
+            <input type="text" autocomplete="name" id="name">
+            <select name="marker" id="marker">
+                <option value="">Select marker</option>
+            </select>
+            <button autofocus id="saveName">Save</button>
+            <button id="closeModal">Close</button>
+        </dialog>
+    </div>
 </body>
 
 </html>
