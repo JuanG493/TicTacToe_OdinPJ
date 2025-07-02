@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { evaluator } from './index.js';
+import { evaluator } from './evaluation.js';
 
 test('base test', () => {
     expect(evaluator([
@@ -54,6 +54,20 @@ describe('test for columns', () => {
             ["_", "_", "x"],
             ["_", "_", "x"]
         ], "x")).toBeTruthy();
+    })
+    test("win first col dog ", () => {
+        expect(evaluator([
+            ['🐶', '🐱', '_'],
+            ['🐶', '🐱', '_'],
+            ['🐶', '_', '_']
+        ], "🐶")).toBeTruthy();
+    })
+    test("no winner", () => {
+        expect(evaluator([
+            ['🐶', '🐱', '_'],
+            ['🐶', '🐱', '_'],
+            ['_', '_', '_']
+        ], "🐶")).toBeFalsy();
     })
 })
 

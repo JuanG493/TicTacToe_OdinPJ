@@ -39,13 +39,20 @@
         .game-zone {
             &__board {
                 grid-column: 1 / span 2;
-                min-width: 14rem;
-                min-height: 14rem;
                 display: grid;
-                grid-template-columns: repeat(3, 1fr);
+                justify-content: center;
+                grid-template-columns: repeat(3, 4rem);
+                grid-template-rows: repeat(3, 4rem);
 
                 &-element {
                     border: 2px solid black;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-size: 2rem;
+
+                    // width: 4rem;
+                    // height: 4rem;
                 }
             }
 
