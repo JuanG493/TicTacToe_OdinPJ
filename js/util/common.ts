@@ -25,7 +25,7 @@ export const markIcons: string[] = [
     "💀",
 ];
 
-export const getElment = (key: string, by: "id" | "class" = "class"): Element | null => {
+export const getElement = (key: string, by: "id" | "class" = "class"): Element | null => {
     const classList: htmlClass = {
         board: "game-zone__board",
         messages: "cmp-tictactoe__messages",

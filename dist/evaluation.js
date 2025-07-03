@@ -2,8 +2,6 @@ const checkEquality = (board, marker) => {
     return board[0] === marker && board[1] === marker && board[2] === marker;
 };
 export const evaluator = (board, marker) => {
-    console.log(board);
-    console.log(marker);
     marker = marker.toLowerCase();
     let winner = false;
     let columns = [];

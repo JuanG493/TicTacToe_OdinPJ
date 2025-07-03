@@ -1,13 +1,10 @@
-import { board } from "./index";
+import { board } from "./index.js";
 
 const checkEquality = (board: [string, string, string], marker: string): boolean => {
     return board[0] === marker && board[1] === marker && board[2] === marker
 }
 
 export const evaluator = (board: board[], marker: string): boolean => {
-    console.log(board);
-    console.log(marker);
-
     marker = marker.toLowerCase();
     let winner = false
     let columns: board[] = []

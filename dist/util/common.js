@@ -22,7 +22,7 @@ export const markIcons = [
     "🎯",
     "💀",
 ];
-export const getElment = (key, by = "class") => {
+export const getElement = (key, by = "class") => {
     const classList = {
         board: "game-zone__board",
         messages: "cmp-tictactoe__messages",
