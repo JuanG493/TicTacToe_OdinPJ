@@ -1,6 +1,15 @@
 const checkEquality = (board, marker) => {
     return board[0] === marker && board[1] === marker && board[2] === marker;
 };
+export const isTie = (board) => {
+    let tie = true;
+    for (let row = 0; row < board.length && tie; row++) {
+        for (let col = 0; col < board[row].length && tie; col++) {
+            tie = board[row][col] == "_" ? false : true;
+        }
+    }
+    return tie;
+};
 export const evaluator = (board, marker) => {
     marker = marker.toLowerCase();
     let winner = false;

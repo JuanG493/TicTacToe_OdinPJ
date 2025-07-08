@@ -1,5 +1,5 @@
 import { evaluator } from "./evaluation.js";
-let player = 'x', opponent = 'o';
+// let player = 'x', opponent = 'o';
 export class Move {
     constructor() {
         this.col = 0;
@@ -16,12 +16,15 @@ function isMovesLeft(board) {
                 return true;
     return false;
 }
-function evaluate(board) {
-    let result = evaluator(board, player);
-    return result ? 1 : 0;
+function evaluate(board, player, opponent) {
+    if (evaluator(board, player))
+        return 10;
+    if (evaluator(board, opponent))
+        return -10;
+    return 0;
 }
-function minimax(board, depth, isMax) {
-    let score = evaluate(board);
+function minimax(board, depth, isMax, player, opponent) {
+    let score = evaluate(board, player, opponent);
     // If Maximizer has won the game
     // return his/her evaluated score
     if (score == 10)
@@ -46,7 +49,7 @@ function minimax(board, depth, isMax) {
                     board[i][j] = player;
                     // Call minimax recursively
                     // and choose the maximum value
-                    best = Math.max(best, minimax(board, depth + 1, !isMax));
+                    best = Math.max(best, minimax(board, depth + 1, !isMax, player, opponent));
                     // Undo the move
                     board[i][j] = '_';
                 }
@@ -66,7 +69,7 @@ function minimax(board, depth, isMax) {
                     board[i][j] = opponent;
                     // Call minimax recursively and
                     // choose the minimum value
-                    best = Math.min(best, minimax(board, depth + 1, !isMax));
+                    best = Math.min(best, minimax(board, depth + 1, !isMax, player, opponent));
                     // Undo the move
                     board[i][j] = '_';
                 }
@@ -77,7 +80,7 @@ function minimax(board, depth, isMax) {
 }
 // This will return the best possible
 // move for the player
-function findBestMove(board) {
+function findBestMove(board, player, opponent) {
     let bestVal = -1000;
     let bestMove = new Move();
     bestMove.row = -1;
@@ -94,7 +97,7 @@ function findBestMove(board) {
                 board[i][j] = player;
                 // compute evaluation function
                 // for this move.
-                let moveVal = minimax(board, 0, false);
+                let moveVal = minimax(board, 0, false, player, opponent);
                 // Undo the move
                 board[i][j] = '_';
                 // If the value of the current move
@@ -111,7 +114,5 @@ function findBestMove(board) {
     return bestMove;
 }
 export const machineBestMove = (markPC, markOpponent, board) => {
-    player = markPC;
-    opponent = markOpponent;
-    return findBestMove(board);
+    return findBestMove(board, markPC, markOpponent);
 };

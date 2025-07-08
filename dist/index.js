@@ -1,4 +1,4 @@
-import { evaluator } from "./evaluation.js";
+import { evaluator, isTie } from "./evaluation.js";
 import { Move, machineBestMove } from "./minMax.js";
 import { getElement, markIcons } from "./util/common.js";
 const players = {
@@ -13,6 +13,7 @@ const players = {
         score: 0
     },
 };
+let messageTimeout = null;
 let currentPlayer;
 const loadBoard = () => {
     let board = getElement("board");
@@ -25,12 +26,6 @@ const loadBoard = () => {
                 board?.append(element);
             }
         }
-        // for (let i = 0; i < 9; i++) {
-        //     const element = document.createElement("div")
-        //     element.className = "game-zone__board-element"
-        //     element.id = i.toString()
-        //     board?.append(element)
-        // }
     }
 };
 const randomNumber = (min = 0, max = 3) => {
@@ -46,13 +41,16 @@ const starterPlayer = () => {
     let random = Math.floor(Math.random() * 2);
     return random === 0 ? "playerOne" : "playerTwo";
 };
-const showMessage = (message, time = 2500) => {
-    const messageElm = getElement("messages");
-    if (messageElm) {
-        messageElm.textContent = message;
-        setInterval(() => {
-            messageElm.textContent = "";
-        }, time);
+const showMessage = (message, time = 3) => {
+    const element = getElement("messages");
+    if (element) {
+        element.textContent = message;
+        if (messageTimeout)
+            clearTimeout(messageTimeout);
+        messageTimeout = setTimeout(() => {
+            element.textContent = "";
+            messageTimeout = null;
+        }, time * 1000);
     }
 };
 const changeSecondPlayer = (name, mark) => {
@@ -71,9 +69,23 @@ const disableEnableEdit = (enable) => {
         edit.style.display = enable ? "block" : "none";
     }
 };
-const disableEnabledButtons = (mode) => {
-    //disable buttos once the game start
-    //mode and button play?
+const disableEnabledButtons = (enable) => {
+    let elemnts = [
+        getElement("friend", "id"),
+        getElement("machine", "id"),
+        getElement("play", "id")
+    ];
+    for (const element of elemnts) {
+        if (element && element instanceof HTMLElement) {
+            element.style.display = enable ? "block" : "none";
+        }
+    }
+    let edits = document.querySelectorAll(".player-container__edit");
+    edits.forEach((btn) => {
+        if (btn instanceof HTMLElement) {
+            btn.style.display = enable ? "block" : "none";
+        }
+    });
 };
 const toggleModality = (targetElement) => {
     document.querySelectorAll(".cmp-tictactoe__modality-element")
@@ -96,44 +108,80 @@ const getMode = () => {
     }
     return "friend";
 };
+const addToscore = (player) => {
+    player.score += 1;
+    let id = currentPlayer == "playerOne" ? "scoreOne" : "scoreTwo";
+    let scoreElement = getElement(id, "id");
+    if (scoreElement && scoreElement instanceof Element) {
+        scoreElement.textContent = player.score.toString();
+    }
+};
+const resetGameBoard = () => {
+    const squares = document.querySelectorAll(".game-zone__board-element");
+    if (squares.length !== 0) {
+        squares.forEach((square) => {
+            if (square instanceof Element) {
+                square.textContent = "";
+            }
+            square.addEventListener("click", handleClickSquare, { once: true });
+        });
+    }
+};
 const controlMatch = () => {
     const mode = getMode();
     let board = getCurrentBoard();
     let winner = evaluator(board, players[currentPlayer].mark);
-    console.log(winner);
-    if (!winner && board.length === 8) {
-        showMessage("TIE");
+    let inGame = true;
+    if (!winner && isTie(board)) {
+        showMessage("TIE", 4);
+        inGame = false;
     }
     else if (winner) {
-        showMessage(`${players[currentPlayer].name} is the winner`);
-        //ganador -> sumar a la puntuacion
+        console.log("Winner: ", winner);
+        inGame = false;
+        showMessage(`${players[currentPlayer].name} is the winner`, 4);
+        addToscore(players[currentPlayer]);
+    }
+    else if (mode === "machine") {
+        inGame = machineMove(board);
+    }
+    if (inGame) {
+        changeTurnPlayer();
+        showMessage("Turn of " + players[currentPlayer].name, 2);
     }
     else {
-        //deshablitar el click mientras se hace la jugada?
-        if (mode === "machine") {
-            //hacer la jugada
-            let move = machineBestMove(players.playerTwo.mark, players.playerOne.mark, board);
-            console.log(move);
-            changeTurnPlayer();
-            drawMachineNextMove(move, players[currentPlayer].mark);
-        }
-        else {
-            changeTurnPlayer();
-        }
+        setTimeout(() => {
+            resetGameBoard();
+            showMessage("New Round", 5);
+            startRound();
+        }, 2000);
     }
+};
+const machineMove = (board) => {
+    changeTurnPlayer();
+    let move = machineBestMove(players.playerTwo.mark, players.playerOne.mark, board);
+    drawMachineNextMove(move, players.playerTwo.mark);
+    let winner = evaluator(getCurrentBoard(), players[currentPlayer].mark);
+    if (winner) {
+        showMessage(`${players[currentPlayer].name} is the winner`, 4);
+        addToscore(players[currentPlayer]);
+        return false;
+    }
+    return true;
 };
 const changeTurnPlayer = () => {
     currentPlayer = currentPlayer === "playerOne" ? "playerTwo" : "playerOne";
+};
+const handleClickSquare = (event) => {
+    const square = event.currentTarget;
+    square.textContent = players[currentPlayer].mark;
+    controlMatch();
 };
 const enabledGameZone = () => {
     const squares = document.querySelectorAll(".game-zone__board-element");
     if (squares.length !== 0) {
         squares.forEach((square) => {
-            square.addEventListener("click", () => {
-                square.textContent = players[currentPlayer].mark;
-                controlMatch();
-                // changeTurnPlayer()
-            }, { once: true });
+            square.addEventListener("click", handleClickSquare, { once: true });
         });
     }
 };
@@ -153,11 +201,13 @@ const getCurrentBoard = () => {
 };
 const drawMachineNextMove = (move, mark) => {
     const square = document.querySelector(`.game-zone__board-element[id="${move.row}_${move.col}"]`);
+    square?.removeEventListener("click", handleClickSquare);
     if (square) {
         square.textContent = mark;
     }
 };
-const startGame = () => {
+const startRound = () => {
+    disableEnabledButtons(false);
     currentPlayer = starterPlayer();
     showMessage(players[currentPlayer].name + ", star!");
     const mode = getMode();
@@ -168,7 +218,28 @@ const startGame = () => {
     enabledGameZone();
 };
 const resetGame = () => {
-    console.log("asd");
+    players.playerOne = {
+        name: "player1",
+        mark: "🐱",
+        score: 0
+    };
+    players.playerTwo = {
+        name: "player2",
+        mark: "🐶",
+        score: 0
+    };
+    for (const [key, val] of Object.entries(players)) {
+        let suffix = key === "playerOne" ? "One" : "Two";
+        let nameElement = getElement(`name${suffix}`, "id");
+        let markElement = getElement(`mark${suffix}`, "id");
+        let scoreElement = getElement(`score${suffix}`, "id");
+        if (nameElement && markElement && scoreElement) {
+            nameElement.textContent = val.name;
+            markElement.textContent = val.mark;
+            scoreElement.textContent = val.score.toString();
+        }
+    }
+    disableEnabledButtons(true);
 };
 const toggleModal = (action) => {
     let dialog = getElement("dialog");
@@ -187,19 +258,19 @@ const toggleModal = (action) => {
     }
 };
 const updatePlayerState = () => {
-    // const name = getElement("name", "id")
-    // const mark = getElement("marker", "id")
+    const newName = getElement("name", "id");
+    const newMark = getElement("marker", "id");
     let suffix = currentPlayer === "playerOne" ? "One" : "Two";
     let name = getElement(`name${suffix}`, "id");
     let mark = getElement(`mark${suffix}`, "id");
     //update the object
     if (currentPlayer in players) {
         const activePlayer = players[currentPlayer];
-        if (name && name instanceof HTMLInputElement && name.value != "") {
-            activePlayer.name = name.value;
+        if (newName && newName instanceof HTMLInputElement && newName.value != "") {
+            activePlayer.name = newName.value;
         }
-        if (mark && mark instanceof HTMLSelectElement && mark.value != "") {
-            activePlayer.mark = mark.value;
+        if (newMark && newMark instanceof HTMLSelectElement && newMark.value != "") {
+            activePlayer.mark = newMark.value;
         }
     }
     //update the HTML elements
@@ -250,7 +321,7 @@ const init = () => {
     const machine = getElement("machine", "id");
     machine?.addEventListener("click", () => toggleModality(machine));
     const play = getElement("play", "id");
-    play?.addEventListener("click", startGame);
+    play?.addEventListener("click", startRound);
     const save = getElement("saveName", "id");
     save?.addEventListener("click", handleCloseModal);
 };
