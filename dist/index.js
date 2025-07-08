@@ -50,7 +50,8 @@ const showMessage = (message, time = 3) => {
         messageTimeout = setTimeout(() => {
             element.textContent = "";
             messageTimeout = null;
-        }, time * 1000);
+            // }, time * 1000);
+        }, 99000);
     }
 };
 const changeSecondPlayer = (name, mark) => {

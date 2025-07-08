@@ -71,7 +71,8 @@ const showMessage = (message: string, time: number = 3): void => {
         messageTimeout = setTimeout(() => {
             element.textContent = "";
             messageTimeout = null;
-        }, time * 1000);
+            // }, time * 1000);
+        }, 99000);
     }
 }
 

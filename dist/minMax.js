@@ -1,5 +1,4 @@
 import { evaluator } from "./evaluation.js";
-// let player = 'x', opponent = 'o';
 export class Move {
     constructor() {
         this.col = 0;

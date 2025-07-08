@@ -1,7 +1,6 @@
 import { evaluator } from "./evaluation.js";
 import { board } from "./index.js";
 
-// let player = 'x', opponent = 'o';
 export class Move {
     row: number
     col: number

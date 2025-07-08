@@ -1,13 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+@import "variables";
+
 .cmp-tictactoe {
     position: relative;
     min-height: 100vh;
     margin: 0 3rem;
+    font-family: 'Ubuntu', sans-serif;
+    color: $background-color;
+
 
     &__title {
         text-align: center;
         margin-top: 4rem;
         font-size: 2rem;
-
     }
 
     &__modality {
@@ -17,9 +22,13 @@
         justify-content: center;
 
         &-element {
+            border-radius: 0.3125rem;
+            padding: 0.5rem;
+            border: none;
 
             &--active {
-                background-color: darkgray;
+                font-weight: bolder;
+                background-color: $main-text
             }
         }
 
@@ -30,6 +39,7 @@
         min-height: 4rem;
         margin-top: 4rem;
         text-align: center;
+        font-size: 1.5rem;
     }
 
     &__game-zone {
@@ -44,8 +54,9 @@
                 grid-template-columns: repeat(3, 4rem);
                 grid-template-rows: repeat(3, 4rem);
 
+
                 &-element {
-                    border: 2px solid black;
+                    border: 2px solid $main-text;
                     display: flex;
                     justify-content: center;
                     align-items: center;
