@@ -1,7 +1,10 @@
 # Tic Tac Toe – TypeScript Edition
 
-This is a rebuilt version of the classic Tic Tac Toe game originally developed in vanilla JavaScript, now refactored using **TypeScript** and **SCSS**. This project is part of [The Odin Project](https://www.theodinproject.com/) curriculum, with a focus on learning and practicing TypeScript in a real-world application.
+This project is a rebuilt version of the classic Tic Tac Toe game, originally developed in vanilla JavaScript and now refactored using TypeScript and SCSS.
+It is part of The Odin Project curriculum, focused on learning and practicing modern web development.
 
+live version of the game here:
+🔗 https://juang493.github.io/TicTacToe_OdinPJ/
 ---
 
 ## Purpose
