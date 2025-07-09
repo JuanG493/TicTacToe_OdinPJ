@@ -1,9 +1,8 @@
+import { getElement, markIcons } from "./common.js";
 import { evaluator, isTie } from "./evaluation.js";
 import { Move, machineBestMove } from "./minMax.js";
-import { getElement, markIcons } from "./util/common.js";
 
 export type board = [string, string, string];
-
 export type htmlClass = {
     [key: string]: string;
 }
@@ -12,7 +11,6 @@ export type player = {
     mark: string
     score: number
 }
-
 export type players = { playerOne: player, playerTwo: player }
 export type playerKey = keyof typeof players;
 
@@ -35,6 +33,7 @@ let currentPlayer: playerKey;
 const loadBoard = (): void => {
     let board = getElement("board")
     if (board) {
+        board.innerHTML = "";
         for (let col = 0; col < 3; col++) {
             for (let row = 0; row < 3; row++) {
                 const element = document.createElement("div")
@@ -71,8 +70,7 @@ const showMessage = (message: string, time: number = 3): void => {
         messageTimeout = setTimeout(() => {
             element.textContent = "";
             messageTimeout = null;
-            // }, time * 1000);
-        }, 99000);
+        }, time * 1000);
     }
 }
 
@@ -111,7 +109,7 @@ const disableEnabledButtons = (enable: boolean) => {
     let edits = document.querySelectorAll(".player-container__edit")
     edits.forEach((btn) => {
         if (btn instanceof HTMLElement) {
-            btn.style.display = enable ? "block" : "none"
+            btn.style.visibility = enable ? "visible" : "hidden";
         }
     })
 }
@@ -138,6 +136,7 @@ const getMode = (): string => {
     }
     return "friend"
 }
+
 const addToscore = (player: player) => {
     player.score += 1;
     let id = currentPlayer == "playerOne" ? "scoreOne" : "scoreTwo";
@@ -146,6 +145,7 @@ const addToscore = (player: player) => {
         scoreElement.textContent = player.score.toString();
     }
 }
+
 const resetGameBoard = () => {
     const squares = document.querySelectorAll(".game-zone__board-element")
     if (squares.length !== 0) {
@@ -180,12 +180,13 @@ const controlMatch = () => {
         showMessage("Turn of " + players[currentPlayer].name, 2)
     } else {
         setTimeout(() => {
-            resetGameBoard();
             showMessage("New Round", 5)
+            resetGameBoard();
             startRound();
         }, 2000);
     }
 }
+
 const machineMove = (board: board[]) => {
     changeTurnPlayer();
     let move = machineBestMove(players.playerTwo.mark, players.playerOne.mark, board)
@@ -279,6 +280,7 @@ const resetGame = () => {
         }
     }
     disableEnabledButtons(true);
+    loadBoard();
 }
 
 const toggleModal = (action: "close" | "open") => {
@@ -288,10 +290,12 @@ const toggleModal = (action: "close" | "open") => {
         if (action === "close") {
             dialog.close();
         } else {
+            //reset the select and the input before show
             const name = getElement("name", "id")
+            const select = getElement("marker", "id");
             if (name && name instanceof HTMLInputElement) name.value = "";
+            if (select && select instanceof HTMLSelectElement) select.value = "";
             dialog.showModal()
-            //TODO resetear el select ?
         }
     }
 }

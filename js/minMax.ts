@@ -10,9 +10,6 @@ export class Move {
     }
 }
 
-// This function returns true if there are moves
-// remaining on the board. It returns false if
-// there are no moves left to play.
 function isMovesLeft(board: board[]) {
     for (let i = 0; i < 3; i++)
         for (let j = 0; j < 3; j++)

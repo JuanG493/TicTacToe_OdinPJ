@@ -1,6 +1,6 @@
+import { getElement, markIcons } from "./common.js";
 import { evaluator, isTie } from "./evaluation.js";
 import { Move, machineBestMove } from "./minMax.js";
-import { getElement, markIcons } from "./util/common.js";
 const players = {
     playerOne: {
         name: "player1",
@@ -18,6 +18,7 @@ let currentPlayer;
 const loadBoard = () => {
     let board = getElement("board");
     if (board) {
+        board.innerHTML = "";
         for (let col = 0; col < 3; col++) {
             for (let row = 0; row < 3; row++) {
                 const element = document.createElement("div");
@@ -50,8 +51,7 @@ const showMessage = (message, time = 3) => {
         messageTimeout = setTimeout(() => {
             element.textContent = "";
             messageTimeout = null;
-            // }, time * 1000);
-        }, 99000);
+        }, time * 1000);
     }
 };
 const changeSecondPlayer = (name, mark) => {
@@ -84,7 +84,7 @@ const disableEnabledButtons = (enable) => {
     let edits = document.querySelectorAll(".player-container__edit");
     edits.forEach((btn) => {
         if (btn instanceof HTMLElement) {
-            btn.style.display = enable ? "block" : "none";
+            btn.style.visibility = enable ? "visible" : "hidden";
         }
     });
 };
@@ -152,8 +152,8 @@ const controlMatch = () => {
     }
     else {
         setTimeout(() => {
-            resetGameBoard();
             showMessage("New Round", 5);
+            resetGameBoard();
             startRound();
         }, 2000);
     }
@@ -241,6 +241,7 @@ const resetGame = () => {
         }
     }
     disableEnabledButtons(true);
+    loadBoard();
 };
 const toggleModal = (action) => {
     let dialog = getElement("dialog");
@@ -250,11 +251,14 @@ const toggleModal = (action) => {
             dialog.close();
         }
         else {
+            //reset the select and the input before show
             const name = getElement("name", "id");
+            const select = getElement("marker", "id");
             if (name && name instanceof HTMLInputElement)
                 name.value = "";
+            if (select && select instanceof HTMLSelectElement)
+                select.value = "";
             dialog.showModal();
-            //TODO resetear el select ?
         }
     }
 };

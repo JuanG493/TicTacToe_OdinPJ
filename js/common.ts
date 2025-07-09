@@ -1,4 +1,4 @@
-import { htmlClass } from "../index";
+import { htmlClass } from "./index";
 
 export const markIcons: string[] = [
     "❌",
